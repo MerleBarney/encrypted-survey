@@ -22,6 +22,7 @@ const isStaticExport = process.env.NEXT_EXPORT === 'true' || process.env.OUTPUT 
 const nextConfig: NextConfig = {
   ...(basePath && { basePath }),
   ...(isStaticExport && { output: 'export' }),
+  trailingSlash: true,
   // Note: headers() is not supported in static export mode
   // For GitHub Pages, headers need to be set via _headers file or meta tags
   ...(!isStaticExport && {
@@ -41,6 +42,13 @@ const nextConfig: NextConfig = {
             },
           ],
         },
+        {
+          source: '/:path*.wasm',
+          headers: [
+            { key: 'Content-Type', value: 'application/wasm' },
+            { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
+          ],
+        }
       ]);
     }
   }),

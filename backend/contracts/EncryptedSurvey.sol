@@ -2,12 +2,12 @@
 pragma solidity ^0.8.24;
 
 import {FHE, euint32, externalEuint32} from "@fhevm/solidity/lib/FHE.sol";
-import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
+import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 /// @title EncryptedSurvey - Privacy-preserving survey system using FHEVM
 /// @notice A survey platform where all answers are encrypted and computed on encrypted data
 /// @dev All survey responses are encrypted and statistics are computed on encrypted data
-contract EncryptedSurvey is SepoliaConfig {
+contract EncryptedSurvey is ZamaEthereumConfig {
     // Survey structure
     struct Survey {
         address creator;
