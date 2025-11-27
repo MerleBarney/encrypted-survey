@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * useEncryptedSurvey
+ * High-level hook encapsulating survey creation, encrypted submission,
+ * results loading, and user-side decryption flows on FHEVM contracts.
+ * Returns helpers and UI-friendly state flags/messages.
+ */
 import { ethers } from "ethers";
 import {
   RefObject,
@@ -596,7 +602,8 @@ const useEncryptedSurveyInternal = (parameters: {
           sameChain.current(thisChainId) &&
           thisContractAddress === contractRef.current?.address
         ) {
-          const value = res[thisTotalResponsesHandle];
+			const resMap = res as Record<string, unknown>;
+			const value = resMap[thisTotalResponsesHandle];
           if (typeof value === "bigint") {
             setDecryptedTotalResponses(value);
           } else if (typeof value === "string") {
@@ -712,7 +719,7 @@ const useEncryptedSurveyInternal = (parameters: {
         }
 
         setMessage("Calling FHEVM userDecrypt for all results...");
-        const res = await instance.userDecrypt(
+		const res = await instance.userDecrypt(
           flatHandles,
           sig.privateKey,
           sig.publicKey,
@@ -726,6 +733,7 @@ const useEncryptedSurveyInternal = (parameters: {
         // Rebuild nested arrays
         const out: bigint[][] = [];
         let cursor = 0;
+		const resMap = res as Record<string, unknown>;
         for (const arr of questionResultHandles) {
           const line: bigint[] = [];
           for (let i = 0; i < arr.length; i++) {
@@ -733,7 +741,7 @@ const useEncryptedSurveyInternal = (parameters: {
             if (!h || h === ethers.ZeroHash) {
               line.push(0n);
             } else {
-              const value = res[h];
+					const value = resMap[h];
               if (typeof value === "bigint") {
                 line.push(value);
               } else if (typeof value === "string") {
